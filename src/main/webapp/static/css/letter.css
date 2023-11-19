@@ -1,0 +1,41 @@
+body {
+    background: antiquewhite;
+    font-family: "Lucida Handwriting", cursive;
+}
+
+table {
+    background-color: #faec8e;
+    border: 3px solid #8c5a25;
+    font-size: 24px;
+    text-align: center;
+    width: 75%;
+}
+td,tr {
+    border: 2px solid rgba(140, 90, 37, 0.88);
+    padding: 10px;
+    border-collapse: separate;
+    margin: 10px;
+    height: max-content;
+}
+
+button {
+    background-color: #8c5a25;
+    border: none;
+    color: #ffffff;
+    padding: 7px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+#yes:hover {
+    background-color: #462d15;
+    box-shadow: 0 12px 16px 0 rgba(56, 56, 56, 0.24), 0 17px 50px 0 rgba(24, 24, 24, 0.24);
+}
+
+#no:hover {
+    background-color: antiquewhite;
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
