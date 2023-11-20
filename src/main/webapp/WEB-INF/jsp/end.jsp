@@ -9,9 +9,9 @@
     </style>
 </head>
 <body style="background-color: <%=request.getSession().getAttribute("color")%>">
-<h4 style="color: <%=request.getSession().getAttribute("text")%>"><%=request.getSession().getAttribute("message")%>
-</h4>
-<h3>Table users</h3>
+<h2 style="color: <%=request.getSession().getAttribute("text")%>"><%=request.getSession().getAttribute("message")%>
+</h2>
+<h3>Table of results</h3>
 <table>
     <tr>
         <th> Name</th>
@@ -35,6 +35,7 @@
     %>
 </table>
 <p>Do you want restart game?</p>
+<%session.invalidate();%>
 <button id="yes" onclick="window.location='/'">Restart</button>
 </body>
 </html>

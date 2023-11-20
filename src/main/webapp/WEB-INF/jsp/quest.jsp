@@ -3,13 +3,16 @@
 <html>
 <head>
     <title>Title</title>
-    <style><%@include file="../../static/css/letter.css"%></style>
+    <style>
+        <%@include file="../../static/css/letter.css" %>
+    </style>
 </head>
 <body>
-<h4>Ok, let's start our quest!!</h4>
+<h2><%=request.getSession().getAttribute("message")%>
+</h2>
 <form name="quest" id="quest" action="/quest" method="post">
-    <label><%=request.getSession().getAttribute("question")%></label>
-    <br>
+    <h4><%=request.getSession().getAttribute("question")%>
+    </h4>
     <%
         List<String> list = (List<String>) request.getSession().getAttribute("variants");
         for (String variant : list) {
@@ -18,8 +21,8 @@
     <%
         }
     %>
-
-    <button type="submit" id="yes"> Ok </button>
+    <br>
+    <button type="submit" id="yes"> Ok</button>
     <button type="reset" id="no" onclick="window.location='/end'">
         NO, I don't know
     </button>

@@ -28,19 +28,17 @@ public class QuestServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession currentSession = req.getSession(true);
         String answer = req.getParameter("answer");
-        int user_id = (int) currentSession.getAttribute("user");
-
-        if (quest.isWin(answer)) {
-            dbService.addScoreById(user_id, 5);
-
-            currentSession.invalidate();
-            User user = dbService.getUserById(user_id);
-            setAttributeForEnd(req.getSession(true), user.getName() + ", You are winner!!!", true, user.getInfo());
-            getServletContext().getRequestDispatcher("/WEB-INF/jsp/end.jsp").forward(req, resp);
-        }
+        int userId = (int) currentSession.getAttribute("user");
         int id = (int) currentSession.getAttribute("id");
         if (quest.checkAnswer(id, answer)) {
-            dbService.addScoreById(user_id, 2);
+            boolean win = (boolean) currentSession.getAttribute("win");
+            if (win) {
+                dbService.addScoreById(userId, 5);
+                User user = dbService.getUserById(userId);
+                setAttributeForEnd(currentSession, user.getName() + ", You are winner!!!");
+                getServletContext().getRequestDispatcher("/WEB-INF/jsp/end.jsp").forward(req, resp);
+            }
+            dbService.addScoreById(userId, 2);
             id++;
             currentSession.setAttribute("id", id);
             Question question = questionService.getQuestById(id);
@@ -50,16 +48,13 @@ public class QuestServlet extends HttpServlet {
         } else {
             currentSession.invalidate();
 
-            setAttributeForEnd(req.getSession(true), "This is end... or not!?", false, "");
+            setAttributeForEnd(req.getSession(true), "This is end... or not!?");
 
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/end.jsp").forward(req, resp);
         }
     }
 
-    private void setAttributeForEnd(HttpSession session, String message, boolean isWin, String info) {
-        if (isWin) {
-            quest.addCustomSettings(info, session);
-        }
+    private void setAttributeForEnd(HttpSession session, String message) {
         session.setAttribute("message", message);
         session.setAttribute("list", dbService.getAllUsers());
         questionService.getAllQuestion().clear();

@@ -4,11 +4,7 @@ import jakarta.servlet.http.HttpSession;
 
 public interface Quest {
 
-    Question createNextQuestion(int questionId, String answer, HttpSession session);
-
-    boolean isWin(String answer);
+    Question createQuest(HttpSession session);
 
     boolean checkAnswer(int questionId, String answer);
-
-    void addCustomSettings(String info, HttpSession session);
 }

@@ -22,27 +22,23 @@ public class MagicQuest implements Quest {
     private final FacultyService facultyService = new FacultyServiceImpl();
 
     private static User user;
+    private static HttpSession session;
     private final DBService dbService = new DBServiceImpl();
 
     private final String HAT_QUESTION = "This is a HAT, that chooses your future path in life. " +
             "Be careful in your chose";
 
     private final String COLOR_QUESTION = "Which color is basic for this faculty?";
-    private final String ANIMAL_QUESTION = "Which animal is on gerb this faculty?";
+    private final String ANIMAL_QUESTION = "Which animal is on emblem this faculty?";
     private final String PLACE_QUESTION = "Where live students this faculty?";
     private final String SCHOOL_QUESTION = "How name of this school?";
 
     private final String FINAL_ANSWER = School.HOGWARTS.name();
 
-    @Override
-    public Question createNextQuestion(int questionId,
-                                       String answer,
-                                       HttpSession session) {
+    public Question createQuest(HttpSession currentSession) {
+        session = currentSession;
         user = dbService.getUserById((Integer) session.getAttribute("user"));
-        if (questionId == 0) {
-            return createFirst();
-        }
-        return questionService.getQuestById(questionId + 1);
+        return createFirst();
     }
 
     private Question createFirst() {
@@ -56,8 +52,8 @@ public class MagicQuest implements Quest {
         return question;
     }
 
-    @Override
-    public boolean isWin(String answer) {
+
+    private boolean isWin(String answer) {
         if (answer.equals(FINAL_ANSWER)) {
             dbService.getUserById(user.getId()).setInfo(user.getInfo());
             return true;
@@ -68,22 +64,27 @@ public class MagicQuest implements Quest {
     @Override
     public boolean checkAnswer(int questionId, String answer) {
         if (questionId == 1) {
+            session.setAttribute("win", false);
+            session.setAttribute("message", "This is " + answer + " faculty.");
             user.setInfo(answer);
-            createQuest(questionId + 1, answer);
+            createQuestionList(questionId + 1, answer);
             return true;
+        }
+        if (isWin(answer)) {
+            session.setAttribute("win", true);
+            addCustomSettings(user.getInfo());
         }
         return questionService.getQuestById(questionId).getAnswer().equals(answer);
     }
 
-    @Override
-    public void addCustomSettings(String info, HttpSession session) {
+    private void addCustomSettings(String info) {
         Faculty faculty = facultyService.getByName(Houses.valueOf(info));
         session.setAttribute("color", faculty.getColor().name().toLowerCase());
         session.setAttribute("text", faculty.getTextColor().name().toLowerCase());
         session.setAttribute("animal", faculty.getAnimal().name().toLowerCase());
     }
 
-    private void createQuest(int id, String answer) {
+    private void createQuestionList(int id, String answer) {
         Question question;
 
         Faculty faculty = facultyService.getByName(Houses.valueOf(answer));

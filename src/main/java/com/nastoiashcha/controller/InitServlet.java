@@ -17,15 +17,12 @@ import java.io.IOException;
 
 @WebServlet(name = "InitServlet", value = "/")
 public class InitServlet extends HttpServlet {
-    private final int START_ID = 0;
     private final Quest quest = new MagicQuest();
 
     private final DBService dbService = new DBServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession currentSession = req.getSession(true);
-        currentSession.setAttribute("message", "This is restart page");
         getServletContext().getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
     }
 
@@ -39,8 +36,9 @@ public class InitServlet extends HttpServlet {
 
         currentSession.setAttribute("user", id);
 
-        Question question = quest.createNextQuestion(START_ID, name, currentSession);
+        Question question = quest.createQuest(currentSession);
 
+        currentSession.setAttribute("message", "Hello, " + name + " this is our first question");
         currentSession.setAttribute("question", question.getQuestion());
         currentSession.setAttribute("id", question.getId());
         currentSession.setAttribute("variants", question.getVariants());
